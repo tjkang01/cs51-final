@@ -1,0 +1,17 @@
+MAJOR STEPS
+
+---1---
+1a. Write a method that takes in a .txt file (e.g. example_seed.txt), and creates a String:[Document] dictionary.  For every "file1a.txt", create a new Document file.  You can use a simple array, since we need to traverse every Document and it'll be O(n) no matter what.  Whoever does this part can also do part 2a, since the method will be useful in completing this task.
+
+1b. Write a hashtable class that stores words along with a number for each.  Refer to the CS50 problem set that did a similar project.
+
+1c. Write a method that takes a String:[Document] dictionary and converts it into a String:Hashtable dictionary.  The hashtable should contain every word contained in the [Document] array along with the number of occurrences of each word.  Optimally, this method will also store the total number of words in a local variable for part 1d.
+
+1d. Write a method that converts the String:Hashtable dictionary into another String:Hashtable dictionary, except the hashtable in this case will contain every word along with the log of the calculated probability (log of (number of occurrences + 1) minus the log of (total number of words + size of vocabulary))
+
+---2---
+2a. Write a method that takes in a string and creates a new Document from a file with filename equal to the string.
+
+2b. Write a method that takes a [String] array and does the following:
+  For each heuristic, calculate the sum of the logs for each word in the [String] array
+  Find the largest sum, and print out that heuristic to the shell prompt (e.g. Printf, print_string, print etc.)
