@@ -1,0 +1,4 @@
+Positive
+file1a.txt file2a.txt file3a.txt file4a.txt
+Negative
+file2a.txt file2b.txt file3b.txt file4b.txt
