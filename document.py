@@ -1,3 +1,5 @@
+from util import Util
+
 class NO_TEXT_FOUND(Exception):
   pass
 
@@ -10,12 +12,19 @@ class Document:
     # text, filename are of type String
     if text == None:
       if filename == None:
-        raise NO_TEXT_FOUND("Neither text nor file found")
-      else: self.text = open(filename, 'r').read()
-    else: self.text = text
+        print "File not found: " + filename
+      else: self.text = self.strip(Util.open_file(filename).read())
+    else: self.text = self.strip(text)
 
   # tokenizer
+  @staticmethod
   def tokenize(self, delimiter=' '):
     # tokenize the string using an optional delimiter
     # del is of type String
     return self.text.split(delimiter)
+
+  # newline stripper
+  @staticmethod
+  def strip(text) :
+    # replace newline characters with spaces
+    return text.replace("\n", " ")
