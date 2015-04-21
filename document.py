@@ -4,6 +4,12 @@ class NO_TEXT_FOUND(Exception):
   pass
 
 class Document:
+  # methods to help clarify print statements
+  def __repr__(self):
+    return "Document"
+  def __str__(self):
+    return "Document"
+
   # initializer
   def __init__(self, text=None, filename=None):
     # if text is None, initialize using filename
