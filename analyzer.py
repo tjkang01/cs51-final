@@ -1,20 +1,45 @@
+from document import Document
+from util import Util
+
+# analyzer class
 class Analyzer:
-  # utility class, hidden from users
-  class Heuristic:
-    # initializer
-    def __init__(self, opt, text):
-      # initialize the Heuristic using the heuristic’s name (opt) and combined text (text) of all of the documents in the seed 
-      # opt, text are of type String
-    
-    # updater
-    def update(self, doc):
-      # update the stored values with a new document
-      # doc is of type Document
-  
   # initializer
   def __init__(self, seed):
-    # initialize the object
-    # seed is of type Seed
+    # seed is the name of the seed file
+    # initialize an empty dictionary
+    dict = {}
+    # open the seed file
+    f = Util.open_file(seed)
+    # begin reading
+    while True :
+      # read heuristic line
+      line = f.readline()
+      # quit if end of file
+      if not line : break
+      # store new heuristic
+      current_heuristic = Util.strip(line)
+      # read filenames
+      filenames = f.readline()
+      # if there isn't another line, quit - incorrect syntax
+      if not filenames : 
+        print ("Incorrect seed structure.  Exiting")
+        sys.exit()
+      # store tokens
+      filenames = Util.tokenize(filenames)
+      # create document array variable
+      docs = []
+      # iterate over files
+      for file in filenames :
+        # try to open the file
+        new_doc = Document(None, file)
+        # if the new document's text is successfuly initialized...
+        if new_doc.text :  
+          # add it to the array
+          docs.append(new_doc)
+      # add new heuristic and docs to dict
+      dict[current_heuristic] = docs
+      # store dictionary
+      self.dict = dict
   
   # updater
   def update(self, opt, doc):
