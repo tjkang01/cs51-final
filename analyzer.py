@@ -42,13 +42,13 @@ class Analyzer:
       self.dict = dict
   
   # updater
-  def update(self, opt, doc):
+  # def update(self, opt, doc):
     # update stored values using a new doc
     # opt is of type String
     # doc is of type Document
   
   # analyzer
-  def analyze(self, doc):
+  # def analyze(self, doc):
     # analyze a new document using the stored values
     # needs to output the probabilities of each of the stored heuristics, ranked from highest to lowest probability
     # doc is of type Document
