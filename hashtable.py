@@ -1,4 +1,5 @@
 import analyzer from Analyzer
+import Math 
 
 class HashTable:
   # initializer
@@ -15,7 +16,7 @@ class HashTable:
     word_and_count = {} 
     # import the dictionary made from the analyzer file that has {heuristic : [doc1,doc2,doc3...]}
     initial_dict = Analyzer.dictionary 
-    # extract just the doc objects [doc1, doc2 ...]
+    # extract just the doc objects [doc1, doc2 ...] - specifically, dict.values() returns the values for a dictionary. In this case, it's just the list. 
     doc_list = initial_dict.values()[0]
     # keeps count of all the words
     count = {} 
@@ -36,6 +37,7 @@ class HashTable:
   # accessor methods
   def get(self, word):
     # return value for a given word (e.g. 0 occurrences, log is 0.223, etc)
-
+    return Math.log(count[word])
+    
   def add(self, val=None):
     # method to add in a new value to the HashTable (e.g. a new word)
