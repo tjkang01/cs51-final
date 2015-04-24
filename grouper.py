@@ -19,9 +19,9 @@ def format(file):
       score = float(score)
       score = int(score)
       if score == 1 : 
-        counter1 = 2
+        counter1 = 3
       elif score == 5 : 
-        counter2 = 2 
+        counter2 = 3 
     elif counter1 == 0:
       # increments
       number1 += 1
