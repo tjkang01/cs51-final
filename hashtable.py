@@ -38,6 +38,7 @@ class HashTable:
   def get(self, word):
     # return value for a given word (e.g. 0 occurrences, log is 0.223, etc)
     return Math.log(count[word])
-    
+
   def add(self, val=None):
     # method to add in a new value to the HashTable (e.g. a new word)
+    
