@@ -51,13 +51,40 @@ class AlphaTree:
         return 27
       elif l == '-':
         return 28
-      else :
+      else:
         return -1
 
   @staticmethod
   # check whether a word has correct characters
   def check(str):
     return AlphaTree.matcher.match(str)
+
+  # return the sum of the values throughout the tree
+  def sum(self):
+    # store the sum
+    sum = 0
+    # iterate over values
+    for i in range(0, 27):
+      sum += self.values[i]
+    # if the table is not empty, recurse through subtrees
+    if self.table != []:
+      for i in range(0, 27):
+        sum += self.table[i].sum()
+    return sum
+
+  # get total number of vals
+  def num_elements(self):
+    # store the total
+    total = 0
+    # iterate over values
+    for i in range(0, 27):
+      if self.values[i] != 0:
+        total += 1
+    # if the table is not empty, recurse through subtrees
+    if self.table != []:
+      for i in range(0, 27):
+        total += self.table[i].num_elements
+    return total
 
   # get the value for a given word
   def get(self, str):
