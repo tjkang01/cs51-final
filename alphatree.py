@@ -1,6 +1,8 @@
 import re
 import itertools
 import string
+import copy
+import math
 
 # The AlphaTree class has a array of length 29.  The first 26 entries correspond to the letters A-Z.
 # The 27th corresponds to ', and the 28th corresponds to -.  The 29th entry stores a value
@@ -27,7 +29,7 @@ class AlphaTree:
     str_repr = ""
     for i in range(0, 27):
       c = AlphaTree.alphabet[i]
-      if tree.values[i] != 0:
+      if tree.values[i] > 0:
         str_repr += prefix + c + ": " + str(tree.values[i]) + "\n"
       if tree.table != []:
         str_repr += AlphaTree.to_string(tree.table[i], prefix + c)
@@ -37,7 +39,7 @@ class AlphaTree:
   def __init__(self):
     # create empty array
     self.table = []
-    self.values = list(itertools.repeat(0, 28))
+    self.values = list(itertools.repeat(0.0, 28))
 
   @staticmethod
   # convert a letter into an index
@@ -75,22 +77,22 @@ class AlphaTree:
   # get total number of vals
   def num_elements(self):
     # store the total
-    total = 0
+    total = 0.0
     # iterate over values
     for i in range(0, 27):
-      if self.values[i] != 0:
-        total += 1
+      if self.values[i] > 0:
+        total += 1.0
     # if the table is not empty, recurse through subtrees
     if self.table != []:
       for i in range(0, 27):
-        total += self.table[i].num_elements
+        total += self.table[i].num_elements()
     return total
 
   # get the value for a given word
   def get(self, str):
     # if the str is not a match, return 0
     if not AlphaTree.check(str):
-      return 0
+      return 0.0
     # get array index of first letter
     i = AlphaTree.indexof(str[0])
     # if the string is just a letter, return the appropriate value
@@ -112,7 +114,7 @@ class AlphaTree:
       if val:
         self.values[i] += val
       else:
-        self.values[i] += 1
+        self.values[i] += 1.0
     # if the string is not just a letter, add the rest of the string to the approriate AlphaTree
     else:
       # initialize table array if necessary
@@ -120,3 +122,28 @@ class AlphaTree:
         for j in range(1, 28):
           self.table.append(AlphaTree())
       self.table[i].add(str[1:], val)
+
+  # return Bayesian transformed tree
+  def calc_values(self):
+    counter = True
+    log_tree = copy.deepcopy(self)
+    vocab_size = self.num_elements()
+    print "Vocab size: " + str(vocab_size)
+    total_words = self.sum()
+    print "Total words: " + str(total_words)
+    for i in range(0, 27):
+      if self.values[i] != 0:
+        if counter:
+          print self.values[i]
+          print total_words + vocab_size
+          counter = False
+        log_tree.values[i] = math.log10(self.values[i] + 1) - math.log10(total_words + vocab_size)
+        print log_tree.values[i]
+      else:
+        log_tree.values[i] = 0.0
+    for i in range(0, 27):
+      if self.table != []:
+        log_tree.table[i] = self.table[i].calc_values()
+      else:
+        log_tree.table = []
+    return log_tree

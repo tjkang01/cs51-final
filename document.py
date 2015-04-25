@@ -8,7 +8,7 @@ class Document:
   def __repr__(self):
     return "Document"
   def __str__(self):
-    return "Document"
+    return self.text
 
   # initializer
   def __init__(self, text=None, filename=None):
@@ -23,8 +23,7 @@ class Document:
     else: self.text = self.strip(text)
 
   # tokenizer
-  @staticmethod
-  def tokenize(self, delimiter=' '):
+  def tokenize(self, delimiter=" "):
     # tokenize the string using an optional delimiter
     # del is of type String
     return self.text.split(delimiter)

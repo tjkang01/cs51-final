@@ -1,5 +1,6 @@
 from document import Document
 from util import Util
+from alphatree import AlphaTree
 
 # analyzer class
 class Analyzer:
@@ -40,15 +41,29 @@ class Analyzer:
       dict[current_heuristic] = docs
       # store dictionary
       self.dict = dict
+
+    # calculate required values
+    self.consolidate()
+    self.transform()
   
-  # updater
-  # def update(self, opt, doc):
-    # update stored values using a new doc
-    # opt is of type String
-    # doc is of type Document
-  
+  # setup method - convert dicts of String:[Document] into alphatrees
+  def consolidate(self):
+    self.word_counts = {}
+    for key in self.dict.keys():
+      print key
+      new_tree = AlphaTree()
+      for doc in self.dict[key]:
+        for word in doc.tokenize():
+          new_tree.add(word)
+      self.word_counts[key] = new_tree
+
+  # calculate log-transformed tree
+  def transform(self):
+    self.log_values = {}
+    for key in self.word_counts.keys():
+      self.log_values[key] = self.word_counts[key].calc_values()
+
   # analyzer
-  # def analyze(self, doc):
+  #def analyze(self, doc):
     # analyze a new document using the stored values
-    # needs to output the probabilities of each of the stored heuristics, ranked from highest to lowest probability
     # doc is of type Document
