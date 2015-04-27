@@ -141,7 +141,7 @@ class AlphaTree:
     for i in range(0, 27):
       # if the value is not zero, substitute in Bayesian value
       if self.values[i] != 0.0:
-        transformed.values[i] = math.log10(self.values[i] + 1) - math.log10(num + total)
+        transformed.values[i] = -1.0 * (math.log10(self.values[i] + 1) - math.log10(num + total))
       # otherwise, no need to do anything
     # return new tree
     return transformed
