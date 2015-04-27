@@ -26,12 +26,21 @@ class AlphaTree:
   @staticmethod
   # utility tostring function
   def to_string(tree, prefix):
+    # initial string
     str_repr = ""
-    for i in range(0, 27):
+    # for each of the 28 values
+    for i in range(28):
+      # get first letter
       c = AlphaTree.alphabet[i]
-      if tree.values[i] > 0:
-        str_repr += prefix + c + ": " + str(tree.values[i]) + "\n"
+      # if there are additional letters
+      if tree.values[i] != 0:
+        # format each line to have same tab length - look like a table
+        num_spaces = 30 - len(prefix + c + ": ")
+        # add the next word
+        str_repr += prefix + c + ": " + (" " * num_spaces) + str(tree.values[i]) + "\n"
+      # if there are subsequent words
       if tree.table != []:
+        # add in the subtree's words
         str_repr += AlphaTree.to_string(tree.table[i], prefix + c)
     return str_repr
 
@@ -66,11 +75,11 @@ class AlphaTree:
     # store the sum
     sum = 0
     # iterate over values
-    for i in range(0, 27):
+    for i in range(28):
       sum += self.values[i]
     # if the table is not empty, recurse through subtrees
     if self.table != []:
-      for i in range(0, 27):
+      for i in range(28):
         sum += self.table[i].sum()
     return sum
 
@@ -79,12 +88,12 @@ class AlphaTree:
     # store the total
     total = 0.0
     # iterate over values
-    for i in range(0, 27):
+    for i in range(28):
       if self.values[i] > 0:
         total += 1.0
     # if the table is not empty, recurse through subtrees
     if self.table != []:
-      for i in range(0, 27):
+      for i in range(28):
         total += self.table[i].num_elements()
     return total
 
@@ -123,7 +132,7 @@ class AlphaTree:
     else:
       # initialize table array if necessary
       if self.table == []:
-        for j in range(1, 28):
+        for j in range(28):
           self.table.append(AlphaTree())
       # add substring to subtree
       self.table[i].add(str[1:], val)
@@ -135,13 +144,17 @@ class AlphaTree:
     # if current table is empty, no need to do anything for the table
     if self.table != []:
       # otherwise, substitute recursively transformed AlphaTrees
-      for i in range(0, 27):
+      for i in range(28):
         transformed.table.append(self.table[i].transform(num, total))
     # substitute appropriate values
-    for i in range(0, 27):
+    for i in range(28):
       # if the value is not zero, substitute in Bayesian value
       if self.values[i] != 0.0:
         transformed.values[i] = -1.0 * (math.log10(self.values[i] + 1) - math.log10(num + total))
       # otherwise, no need to do anything
     # return new tree
     return transformed
+
+  # utility print statements
+  def show(self):
+    print self.__str__()

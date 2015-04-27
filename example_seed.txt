@@ -1,4 +1,4 @@
-Positive
-example.txt
-Negative
-example2.txt
+positive
+1
+negative
+1

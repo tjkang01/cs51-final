@@ -27,8 +27,8 @@ class Util:
       f = open(filename, 'r')
     # if an exception is thrown...
     except IOError:
-      # print our an error and return nothing
-      print "File " + filename + " does not exist."
+      # print out an error and return nothing
+      print "File \'" + filename + "\' does not exist."
       return None
     # otherwise return the new file buffer
     return f

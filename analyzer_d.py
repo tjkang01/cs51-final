@@ -141,3 +141,27 @@ class Analyzer:
       str_repr += key + "-" * (36 - len(key)) + "\n  "
       str_repr += self.word_counts[key].__str__().replace("\n", "\n  ")[:-2]
     print str_repr
+
+  # analyzer
+  def analyze(self, filename):
+    # analyze a new document using the stored values
+    doc = Document(None, filename)
+    # get words from doc
+    words = doc.tokenize()
+    # store dict of log value sums
+    log_sums = {}
+    # for every heuristic...
+    for key in self.log_values:
+      # initialize a value to 0
+      current_sum = 0.0
+      # iterate over words
+      for word in words:
+        current_sum += self.log_values[key].get(word)
+      # store new sum
+      log_sums[key] = current_sum
+    # print out new dictionary
+    print log_sums
+
+  # automated analyzer and learner
+  #def begin_learn(self, fnames):
+    # fnames is an array of folder names corresponding to each of the heuristics
