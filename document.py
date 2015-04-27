@@ -26,7 +26,7 @@ class Document:
   def tokenize(self, delimiter=" "):
     # tokenize the string using an optional delimiter
     # del is of type String
-    return self.text.split(delimiter)
+    return Util.tokenize(self.text)
 
   # newline stripper
   @staticmethod

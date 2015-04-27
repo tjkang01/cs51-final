@@ -61,9 +61,26 @@ class Analyzer:
   def transform(self):
     self.log_values = {}
     for key in self.word_counts.keys():
-      self.log_values[key] = self.word_counts[key].calc_values()
+      num_unique = self.word_counts[key].num_elements()
+      total_words = self.word_counts[key].sum()
+      self.log_values[key] = self.word_counts[key].transform(num_unique, total_words)
 
   # analyzer
-  #def analyze(self, doc):
+  def analyze(self, filename):
     # analyze a new document using the stored values
-    # doc is of type Document
+    doc = Document(None, filename)
+    # get words from doc
+    words = doc.tokenize()
+    # store dict of log value sums
+    log_sums = {}
+    # for every heuristic...
+    for key in self.log_values:
+      # initialize a value to 0
+      current_sum = 0.0
+      # iterate over words
+      for word in words:
+        current_sum += self.log_values[key].get(word)
+      # store new sum
+      log_sums[key] = current_sum
+    # print out new dictionary
+    print log_sums

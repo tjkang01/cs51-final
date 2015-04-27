@@ -100,6 +100,10 @@ class AlphaTree:
       return self.values[i]
     # if the string is not just a letter, get the rest of the string from the appropriate AlphaTree
     else:
+      # if the table is empty, return zero
+      if self.table == []:
+        return 0.0
+      # else return the next iteration
       return self.table[i].get(str[1:])
 
   # add an entry
@@ -121,29 +125,23 @@ class AlphaTree:
       if self.table == []:
         for j in range(1, 28):
           self.table.append(AlphaTree())
+      # add substring to subtree
       self.table[i].add(str[1:], val)
 
   # return Bayesian transformed tree
-  def calc_values(self):
-    counter = True
-    log_tree = copy.deepcopy(self)
-    vocab_size = self.num_elements()
-    print "Vocab size: " + str(vocab_size)
-    total_words = self.sum()
-    print "Total words: " + str(total_words)
+  def transform(self, num, total):
+    # after initialization, all values are 0 and the table is []
+    transformed = AlphaTree()
+    # if current table is empty, no need to do anything for the table
+    if self.table != []:
+      # otherwise, substitute recursively transformed AlphaTrees
+      for i in range(0, 27):
+        transformed.table.append(self.table[i].transform(num, total))
+    # substitute appropriate values
     for i in range(0, 27):
-      if self.values[i] != 0:
-        if counter:
-          print self.values[i]
-          print total_words + vocab_size
-          counter = False
-        log_tree.values[i] = math.log10(self.values[i] + 1) - math.log10(total_words + vocab_size)
-        print log_tree.values[i]
-      else:
-        log_tree.values[i] = 0.0
-    for i in range(0, 27):
-      if self.table != []:
-        log_tree.table[i] = self.table[i].calc_values()
-      else:
-        log_tree.table = []
-    return log_tree
+      # if the value is not zero, substitute in Bayesian value
+      if self.values[i] != 0.0:
+        transformed.values[i] = math.log10(self.values[i] + 1) - math.log10(num + total)
+      # otherwise, no need to do anything
+    # return new tree
+    return transformed
