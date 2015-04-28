@@ -25,7 +25,7 @@ class Analyzer:
     # initialize an empty dictionary
     dict = {}
     # ---USER FEEDBACK---
-    print "Attempting to read seed file..."
+    print "\nAttempting to read seed file..."
     # open the seed file
     f = Util.open_file(seed)
     # if the file doesn't exist, return
@@ -73,7 +73,7 @@ class Analyzer:
       self.dict = dict
 
     # ---USER FEEDBACK---
-    print "Done reading files!"
+    print "Done reading files!\n"
 
     # calculate required values
     # initialize dictionaries
@@ -82,10 +82,10 @@ class Analyzer:
     # analyze for each heuristic found
     for key in self.dict:
       self.consolidate(key)
-      self.transform(key)
+      self.transform(key, True)
 
     # ---USER FEEDBACK---
-    print "Analyzer object initialized!"
+    print "Analyzer object initialized!\n"
   
   # setup method - convert dicts of String:[Document] into alphatrees
   def consolidate(self, key):
@@ -102,9 +102,11 @@ class Analyzer:
     self.word_counts[key] = new_tree
 
   # calculate log-transformed tree
-  def transform(self, key):
+  def transform(self, key, feedback):
     # ---USER FEEDBACK---
-    print "Calculating word probabilities for heuristic \'" + key + "\'..."
+    # if the feedback tag is active, print out information
+    if feedback:
+      print "Calculating word probabilities for heuristic \'" + key + "\'...\n"
     # calculate tree statistics
     num_unique = self.word_counts[key].num_elements()
     total_words = self.word_counts[key].sum()
@@ -165,7 +167,7 @@ class Analyzer:
       # add word to correct alphatree
       self.word_counts[heuristic].add(word)
     # recalculate new values
-    self.transform(heuristic)
+    self.transform(heuristic, False)
 
   # utility print statements
   def show_logs(self):
@@ -184,10 +186,12 @@ class Analyzer:
     # output percentage correctness in both cases into file
 
   # learning sequence 1 - analyzer learns given categorized documents
-  def easy_learn(self, dir):
+  def learn(self, dir, easy):
     # in this sequence, labeled documents are provided
     # dir is the filename of the directory containing the labeled documents
     # in labeled documents, the first line is the heuristic and the second is the text
+    # if easy is True, we allow the program to learn based on the correct heuristic
+    # if easy is False, the analyzer will assume its guess is correct
 
     # get total number of files in directory
     num_files = sum(os.path.isfile(f) for f in glob.glob(dir + "/*"))
@@ -205,20 +209,25 @@ class Analyzer:
       if f:
         # calculate correct and guessed heuristics
         correct_heuristic = f.readline()[:-1]
-        print "Correct: " + correct_heuristic
         text = f.readline()
-        print "Text: " + text
         guessed_heuristic = self.analyze(None, text)
-        print "Guessed: " + guessed_heuristic
-        # if the two are equal, increment total correct
+        # token to show user whether program guessed correctly or not
+        was_correct = "N"
+        # if the two are equal... 
         if correct_heuristic == guessed_heuristic:
+          # change token to yes
+          was_correct = "Y"
+          # increment total correct
           total_correct += 1
         # increment total files
         total_files += 1
         # add new document to dictionaries
-        self.add(Document(None, fn), correct_heuristic, True)
+        if easy:
+          self.add(Document(None, fn), correct_heuristic, True)
+        else:
+          self.add(Document(None, fn), guessed_heuristic, True)
         # print results
-        print str(total_correct) + "/" + str(total_files)
+        print "File " + str(i) + ": " + was_correct + ". " + str(total_correct) + "/" + str(total_files)
 
   # learning sequence 2 - analyzer learns by itself with no feedback
   # def learn2(self, dir):
