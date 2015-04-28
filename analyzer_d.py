@@ -154,8 +154,18 @@ class Analyzer:
     return largest_heuristic
 
   # method to add a document to storage
-  #def add(self, doc, heuristic):
-
+  def add(self, doc, heuristic, tagged):
+    # tokenize document content
+    words = doc.tokenize()
+    # if the document was tagged with the correct heuristic, remove the first word
+    if tagged:
+      words.pop(0)
+    # iterate over the words
+    for word in words:
+      # add word to correct alphatree
+      self.word_counts[heuristic].add(word)
+    # recalculate new values
+    self.transform(heuristic)
 
   # utility print statements
   def show_logs(self):
@@ -187,8 +197,10 @@ class Analyzer:
     total_files = 0
     # document names should be formatted as "n.txt", where n goes from 0 to num_files - 1
     for i in range(num_files):
+      # filename
+      fn = dir + "/" + str(i) + ".txt"
       # open the new file
-      f = Util.open_file(dir + "/" + str(i) + ".txt")
+      f = Util.open_file(fn)
       # if the file is not None (i.e. opening the file was successful)
       if f:
         # calculate correct and guessed heuristics
@@ -203,6 +215,8 @@ class Analyzer:
           total_correct += 1
         # increment total files
         total_files += 1
+        # add new document to dictionaries
+        self.add(Document(None, fn), correct_heuristic, True)
         # print results
         print str(total_correct) + "/" + str(total_files)
 
