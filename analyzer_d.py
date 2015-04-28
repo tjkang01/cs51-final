@@ -1,6 +1,8 @@
 from document import Document
 from util import Util
 from alphatree import AlphaTree
+import glob
+import os
 
 # analyzer class
 class Analyzer:
@@ -74,50 +76,55 @@ class Analyzer:
     print "Done reading files!"
 
     # calculate required values
-    self.consolidate()
-    self.transform()
+    # initialize dictionaries
+    self.word_counts = {}
+    self.log_values = {}
+    # analyze for each heuristic found
+    for key in self.dict:
+      self.consolidate(key)
+      self.transform(key)
 
     # ---USER FEEDBACK---
     print "Analyzer object initialized!"
   
   # setup method - convert dicts of String:[Document] into alphatrees
-  def consolidate(self):
-    # initialize word count dictionary
-    self.word_counts = {}
+  def consolidate(self, key):
     # ---USER FEEDBACK---
     print "Consolidating files into word dictionaries..."
-    # for each heuristic...
-    for key in self.dict.keys():
-      # initialize a new tree
-      new_tree = AlphaTree()
-      # add all docs to the tree
-      for doc in self.dict[key]:
-        # add each word in the document
-        for word in doc.tokenize():
-          new_tree.add(word)
-      # set the new tree for the given key
-      self.word_counts[key] = new_tree
+    # initialize a new tree
+    new_tree = AlphaTree()
+    # add all docs to the tree
+    for doc in self.dict[key]:
+      # add each word in the document
+      for word in doc.tokenize():
+        new_tree.add(word)
+    # set the new tree for the given key
+    self.word_counts[key] = new_tree
 
   # calculate log-transformed tree
-  def transform(self):
-    # initialize log value dictionary
-    self.log_values = {}
-    # for each key in the dictionary...
-    for key in self.word_counts.keys():
-      # ---USER FEEDBACK---
-      print "Calculating word probabilities for heuristic \'" + key + "\'..."
-      # calculate tree statistics
-      num_unique = self.word_counts[key].num_elements()
-      total_words = self.word_counts[key].sum()
-      # add new transformed tree to dictionary
-      self.log_values[key] = self.word_counts[key].transform(num_unique, total_words)
+  def transform(self, key):
+    # ---USER FEEDBACK---
+    print "Calculating word probabilities for heuristic \'" + key + "\'..."
+    # calculate tree statistics
+    num_unique = self.word_counts[key].num_elements()
+    total_words = self.word_counts[key].sum()
+    # add new transformed tree to dictionary
+    self.log_values[key] = self.word_counts[key].transform(num_unique, total_words)
 
   # analyzer
-  def analyze(self, filename):
+  def analyze(self, filename=None, text=None):
     # analyze a new document using the stored values
-    doc = Document(None, filename)
-    # get words from doc
-    words = doc.tokenize()
+    # if there is a filename given, create a new Document object
+    if filename != None:
+      doc = Document(None, filename)
+      words = doc.tokenize()
+    # otherwise, analyze the given text
+    elif text != None:
+      words = Util.tokenize(text)
+    # if both are None, return error
+    else:
+      print "Analyzer requires a filename or text to analyze.  Please try again."
+      return
     # store dict of log value sums
     log_sums = {}
     # for every heuristic...
@@ -129,8 +136,26 @@ class Analyzer:
         current_sum += self.log_values[key].get(word)
       # store new sum
       log_sums[key] = current_sum
-    # print out new dictionary
-    print log_sums
+    
+    # calculate largest log sum; this can be improved by doing this inside above loop
+    # for clarity, we will add an extra loop here
+    # track largest sum
+    largest = -1.0
+    # track largest key
+    largest_heuristic = ""
+    # iterate through all the keys
+    for key in log_sums:
+      # if the new value is larger...
+      if log_sums[key] > largest:
+        # update values
+        largest = log_sums[key]
+        largest_heuristic = key
+    # return best key
+    return largest_heuristic
+
+  # method to add a document to storage
+  #def add(self, doc, heuristic):
+
 
   # utility print statements
   def show_logs(self):
@@ -142,26 +167,48 @@ class Analyzer:
       str_repr += self.word_counts[key].__str__().replace("\n", "\n  ")[:-2]
     print str_repr
 
-  # analyzer
-  def analyze(self, filename):
-    # analyze a new document using the stored values
-    doc = Document(None, filename)
-    # get words from doc
-    words = doc.tokenize()
-    # store dict of log value sums
-    log_sums = {}
-    # for every heuristic...
-    for key in self.log_values:
-      # initialize a value to 0
-      current_sum = 0.0
-      # iterate over words
-      for word in words:
-        current_sum += self.log_values[key].get(word)
-      # store new sum
-      log_sums[key] = current_sum
-    # print out new dictionary
-    print log_sums
+  # MACHINE LEARNING METHODS
+    # the same documents will be used for both
+    # in one method, the program will be told the file heuristic after it guesses
+    # in the other, the program will not be told the heuristic (real life)
+    # output percentage correctness in both cases into file
 
-  # automated analyzer and learner
-  #def begin_learn(self, fnames):
-    # fnames is an array of folder names corresponding to each of the heuristics
+  # learning sequence 1 - analyzer learns given categorized documents
+  def easy_learn(self, dir):
+    # in this sequence, labeled documents are provided
+    # dir is the filename of the directory containing the labeled documents
+    # in labeled documents, the first line is the heuristic and the second is the text
+
+    # get total number of files in directory
+    num_files = sum(os.path.isfile(f) for f in glob.glob(dir + "/*"))
+    # tracker to store number of correct guesses so far
+    total_correct = 0
+    # total correctly formatted files so far
+    total_files = 0
+    # document names should be formatted as "n.txt", where n goes from 0 to num_files - 1
+    for i in range(num_files):
+      # open the new file
+      f = Util.open_file(dir + "/" + str(i) + ".txt")
+      # if the file is not None (i.e. opening the file was successful)
+      if f:
+        # calculate correct and guessed heuristics
+        correct_heuristic = f.readline()[:-1]
+        print "Correct: " + correct_heuristic
+        text = f.readline()
+        print "Text: " + text
+        guessed_heuristic = self.analyze(None, text)
+        print "Guessed: " + guessed_heuristic
+        # if the two are equal, increment total correct
+        if correct_heuristic == guessed_heuristic:
+          total_correct += 1
+        # increment total files
+        total_files += 1
+        # print results
+        print str(total_correct) + "/" + str(total_files)
+
+  # learning sequence 2 - analyzer learns by itself with no feedback
+  # def learn2(self, dir):
+    # see above for description of semantics
+    # in this test, program will not be told correct heuristic
+    # it will assume that whatever it guesses is correct
+    # it will still read the correct heuristic to output percentage correct
