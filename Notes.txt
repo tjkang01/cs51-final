@@ -1,0 +1,10 @@
+if you don't want to change your existing installations, use the virtualenv package
+install virtualenv, virtualenvwrapper (provide link)
+
+bash script: (check if this works on cs51 user, may need to add code to add paths to bash profile)
+mkvirtualenv cs51-text-analyzer
+workon cs51-text-analyzer
+curl -O https://bootstrap.pypa.io/get-pip.py
+python get-pip.py
+rmtrash get-pip.py
+pip install tweepy

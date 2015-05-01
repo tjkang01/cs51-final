@@ -1,0 +1,12 @@
+CS51_Text_Analyzer
+https://github.com/kevinzhang96/cs51-final
+
+Access Token:					16914991-sz5ocOxjDmHgzCSx81AgH7Fi7Pp5ekrp7wLNZJt7S
+Access Token Secret:			220w8mGcwBaqAUB3rGP8U8vyYBZ4u4R0Bj4mzer6JGepW
+API Key: 						7sKBF7yJp9zRoyp42fw7DabOi
+API Secret: 					ITMjCwMq9QQhGG3lMsMGh4I6Fgkfuj4LuDkc161G4Q268h0u8G
+Owner ID:						16914991
+App-only authentication:		https://api.twitter.com/oauth2/token
+Request token URL:				https://api.twitter.com/oauth/request_token
+Authorize URL:					https://api.twitter.com/oauth/authorize
+Access token URL:				https://api.twitter.com/oauth/access_token

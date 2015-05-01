@@ -213,7 +213,7 @@ class Analyzer:
         guessed_heuristic = self.analyze(None, text)
         # token to show user whether program guessed correctly or not
         was_correct = "N"
-        # if the two are equal... 
+        # if the two are equal...
         if correct_heuristic == guessed_heuristic:
           # change token to yes
           was_correct = "Y"
