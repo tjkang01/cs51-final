@@ -59,9 +59,9 @@ class AlphaTree:
       if l.isalpha():
         return ord(l.lower()) - 97
       elif l == '\'':
-        return 27
+        return 26
       elif l == '-':
-        return 28
+        return 27
       else:
         return -1
 
@@ -122,6 +122,9 @@ class AlphaTree:
       return
     # get array index of first letter
     i = AlphaTree.indexof(str[0])
+    # if i is -1, the word's not a word we want to examine
+    if i == -1:
+      return
     # if the string is just a letter, add the approriate value
     if len(str) == 1:
       if val:
@@ -135,7 +138,7 @@ class AlphaTree:
         for j in range(28):
           self.table.append(AlphaTree())
       # add substring to subtree
-      self.table[i].add(str[1:], val)
+      self.table[0].add(str[1:], val)
 
   # return Bayesian transformed tree
   def transform(self, num, total):

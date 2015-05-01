@@ -10,10 +10,16 @@ def format(file):
   # number of reviews
   number1 = 0
   number2 = 0
+  # max number of reviews
+  max_1 = 20
+  max_2 = 20
   # initialize counters
   counter1 = -1
   counter2 = -1
   for line in f:
+    # break if we already have all the reviews we want
+    if number1 == max_1 and number2 == max_2:
+      break;
     # only gets the actual review
     if "review/score" in line:
       score = line.replace("review/score: ", "")
@@ -23,7 +29,7 @@ def format(file):
         counter1 = 3
       elif score == 5 : 
         counter2 = 3 
-    elif counter1 == 0:
+    elif counter1 == 0 and number1 < max_1:
       # gets rid of the review
       temp = line.replace("review/text:", "")
       # turns the review into a tokenized list
@@ -38,7 +44,7 @@ def format(file):
         if (re.compile("^[a-zA-Z'-]+$")).match(word):
           f.write(word + " ")
       f.close()
-    elif counter2 == 0:
+    elif counter2 == 0 and number2 < max_2:
       # gets rid of the review
       temp = line.replace("review/text:", "")
       # turns the review into a tokenized list
@@ -57,4 +63,8 @@ def format(file):
     if counter1 > -1:
       counter1 -= 1
     if counter2 > -1:
-      counter2 -= 1  
+      counter2 -= 1
+  s = open("seed.txt", "w")
+  s.write("positive\n" + str(number1) + "\n")
+  s.write("negative\n" + str(number2))
+  s.close()
