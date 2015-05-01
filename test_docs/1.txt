@@ -1,2 +1,0 @@
-negative
-a ab abc abcd z zy zyx

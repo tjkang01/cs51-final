@@ -228,10 +228,3 @@ class Analyzer:
           self.add(Document(None, fn), guessed_heuristic, True)
         # print results
         print "File " + str(i) + ": " + was_correct + ". " + str(total_correct) + "/" + str(total_files)
-
-  # learning sequence 2 - analyzer learns by itself with no feedback
-  # def learn2(self, dir):
-    # see above for description of semantics
-    # in this test, program will not be told correct heuristic
-    # it will assume that whatever it guesses is correct
-    # it will still read the correct heuristic to output percentage correct

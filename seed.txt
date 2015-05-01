@@ -1,4 +1,4 @@
 positive
-20
+100
 negative
-20
+100
