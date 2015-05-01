@@ -1,0 +1,2 @@
+title: Dynamic Naive Bayes Algorithm
+seas-usernames: kevinzhang, tkang01, ptan

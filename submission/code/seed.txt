@@ -1,0 +1,4 @@
+positive
+10
+negative
+10
